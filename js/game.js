@@ -1,5 +1,7 @@
 enchant();
 var aux = 0;
+var currentPadX = 0;
+var currentPadY = 0;
 window.onload = function(){
 		var game = new Core(300, 400);
 		game.fps = 40;
@@ -37,34 +39,60 @@ window.onload = function(){
 					valueY = -1
 				}
 
-				this.x += valueX;
-				this.y += valueY;
+				// this.x += valueX;
+				// this.y += valueY;
 
 				if(pad.intersect(court)) {
-					if (aux == 0){
-						aux = 1
-						court.image = game.assets["img/court2.png"];
-					}else{
-						aux = 0
-						court.image = game.assets["img/court.png"];
-					}
-					
-				}	
+					court.image = game.assets["img/court2.png"];
+				}else{
+					court.image = game.assets["img/court.png"];
+				}
 
 			});
 
+			// pad.addEventListener("touchstart", function(){
+			// 		// direction = Math.floor(Math.random() * 35)
+			// 		// rand = Math.floor(Math.random() * 80)
+			// 		// move = Math.random() < 0.5 ? -1*rand : 1*rand;
+			// 		pad.tl.moveBy(90,90,10); 
+			// });
+
 			pad.addEventListener("touchstart", function(){
-					direction = Math.floor(Math.random() * 35)
-					rand = Math.floor(Math.random() * 80)
-					move = Math.random() < 0.5 ? -1*rand : 1*rand;
-					pad.tl.moveBy(move, direction , 10).loop(); 
+				currentPadX = this.x
+				currentPadY = this.y
 			});
 
 			pad.on('touchmove', function(evt){
-					console.debug("Me Movi")
-					console.debug(Math.floor(Math.random() * 80))
+				this.x = evt.x;
+				this.y = evt.y;
+			});
+
+			pad.on('touchend', function(evt){
+				deltaY = this.y - currentPadY
+				deltaX = this.x - currentPadX
+				pad.tl.moveBy(deltaX,deltaY,50).loop();
+
+				console.debug(deltaX)
+				console.debug(deltaY)
+				console.debug(distance(deltaX,deltaY))
+				angle = toDegrees(Math.atan2(deltaY,deltaX))
 			});
 
 		};
 		game.start();
 };
+
+function toDegrees (angle) {
+  return angle * (180 / Math.PI);
+}
+
+function distance(x,y){
+	a = x*x
+	b = y*y;
+	c = Math.sqrt(a+b)
+	return c
+}
+
+function speed(){
+
+}
